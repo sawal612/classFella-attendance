@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Class {
+  id        String   @id @default(cuid())
+  userId    String   // Clerk User ID of the CR
+  name      String
+  section   String?
+  students  Student[]
+  sessions  AttendanceSession[]
+  createdAt DateTime @default(now())
+}
+
+model Student {
+  id               String   @id @default(cuid())
+  classId          String
+  class            Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  name             String
+  rollNumber       String
+  enrollmentNumber String?
+  attendance       AttendanceRecord[]
+  createdAt        DateTime @default(now())
+
+  @@unique([classId, rollNumber])
+}
+
+model AttendanceSession {
+  id          String   @id @default(cuid())
+  classId     String
+  class       Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subject     String
+  date        DateTime
+  lectureTime String?
+  notes       String?
+  records     AttendanceRecord[]
+  createdAt   DateTime @default(now())
+}
+
+model AttendanceRecord {
+  id          String            @id @default(cuid())
+  sessionId   String
+  session     AttendanceSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  studentId   String
+  student     Student           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  status      String            // "PRESENT" or "ABSENT"
+  createdAt   DateTime          @default(now())
+
+  @@unique([sessionId, studentId])
+}
