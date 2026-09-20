@@ -49,7 +49,7 @@ export default function MobileResponsiveLayout({ children }: { children: React.R
           </h1>
         </div>
         <div className="flex items-center shrink-0">
-          <UserButton afterSignOutUrl="/" />
+          <UserButton />
         </div>
       </div>
 
@@ -108,7 +108,7 @@ export default function MobileResponsiveLayout({ children }: { children: React.R
           <div className="text-lg font-black tracking-widest uppercase text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 drop-shadow-sm">
             CR Portal
           </div>
-          <UserButton afterSignOutUrl="/" />
+          <UserButton />
         </header>
         <div className="flex-1 p-4 md:p-8 overflow-y-auto w-full gsap-page-content">
           {children}
