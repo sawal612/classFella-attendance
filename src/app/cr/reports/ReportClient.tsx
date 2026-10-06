@@ -37,14 +37,18 @@ const AttendancePDF = ({ session, className, records, students }: any) => {
             <View style={styles.tableColHeader}><Text style={styles.tableCell}>Status</Text></View>
           </View>
           
-          {students?.map((student: any) => {
+          {[...(students || [])]
+            .sort((a, b) => a.rollNumber.localeCompare(b.rollNumber, undefined, { numeric: true, sensitivity: 'base' }))
+            .map((student: any) => {
             const record = records.find((r: any) => r.studentId === student.id);
             const status = record ? record.status : "N/A";
+            const textStyle = status === "ABSENT" ? { ...styles.tableCell, color: "red" } : styles.tableCell;
+            
             return (
               <View style={styles.tableRow} key={student.id}>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>{student.rollNumber}</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>{student.name}</Text></View>
-                <View style={styles.tableCol}><Text style={styles.tableCell}>{status}</Text></View>
+                <View style={styles.tableCol}><Text style={textStyle}>{student.rollNumber}</Text></View>
+                <View style={styles.tableCol}><Text style={textStyle}>{student.name}</Text></View>
+                <View style={styles.tableCol}><Text style={textStyle}>{status}</Text></View>
               </View>
             );
           })}
