@@ -21,6 +21,13 @@ const AttendancePDF = ({ session, className, records, students }: any) => {
   const presentCount = records.filter((r: any) => r.status === "PRESENT").length;
   const totalCount = records.length;
 
+  const absentStudents = [...(students || [])]
+    .filter((student: any) => {
+      const record = records.find((r: any) => r.studentId === student.id);
+      return record && record.status === "ABSENT";
+    })
+    .sort((a, b) => a.rollNumber.localeCompare(b.rollNumber, undefined, { numeric: true, sensitivity: 'base' }));
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -59,6 +66,17 @@ const AttendancePDF = ({ session, className, records, students }: any) => {
           <Text>Present: {presentCount}</Text>
           <Text>Absent: {totalCount - presentCount}</Text>
         </View>
+
+        {absentStudents.length > 0 && (
+          <View style={{ marginTop: 20 }}>
+            <Text style={{ fontSize: 14, fontWeight: "bold", marginBottom: 10, color: "red" }}>Absent Students:</Text>
+            {absentStudents.map((student: any) => (
+              <Text key={student.id} style={{ fontSize: 12, color: "red", marginBottom: 4 }}>
+                • Roll No: {student.rollNumber} ({student.name})
+              </Text>
+            ))}
+          </View>
+        )}
       </Page>
     </Document>
   );
